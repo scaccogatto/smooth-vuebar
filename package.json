@@ -1,0 +1,22 @@
+{
+  "name": "smooth-vuebar",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scaccogatto/smooth-vuebar.git"
+  },
+  "author": "Marco 'Gatto' Boffo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scaccogatto/smooth-vuebar/issues"
+  },
+  "homepage": "https://github.com/scaccogatto/smooth-vuebar#readme",
+  "dependencies": {
+    "smooth-scrollbar": "^8.4.0"
+  }
+}
