@@ -10,6 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/scaccogatto/smooth-vuebar.git"
   },
+  "keywords": [
+    "vue.js",
+    "smooth",
+    "scrollbar"
+  ],
   "author": "Marco 'Gatto' Boffo",
   "license": "MIT",
   "bugs": {
