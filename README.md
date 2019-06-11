@@ -2,6 +2,10 @@
 
 > Vue directive wrapper for [smooth-scrollbar](https://github.com/idiotWu/smooth-scrollbar)
 
+## Demo
+
+You can refer to the [wrapped library's demo](https://idiotwu.github.io/smooth-scrollbar/).
+
 ## Why
 
 There are many other wrappers for this library but none of them implements the original library as directive.
