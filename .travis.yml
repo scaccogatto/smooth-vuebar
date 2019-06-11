@@ -1,3 +1,10 @@
+language: node_js
+node_js:
+- lts/dubnium
+install:
+- npm install
+script:
+- npm run test
 deploy:
   provider: npm
   email: marcoboffo.waves@gmail.com
