@@ -1,0 +1,8 @@
+deploy:
+  provider: npm
+  email: marcoboffo.waves@gmail.com
+  api_key:
+    secure: FUSzt0zymyKj//346DhncEqxGtbjkq9gdehU13/GHLY2Uc6IlTFo9t98QxLxNQvgxRx+PEnQP1BQkykkuqnfhMLMz7cwZSY9AyCT5wvHOwZxTe8eoNAgflaUx8YhFWqq3NxuScL/wdwQ92bbTfT8tmqdMrzVTpnr3sBUO5BRoWTGf228z0ClDdITFoIuryWkWaMeE+oJS/qCrrSjhqdLPCCr5G96fSPt+gdS4xYF7GA8dEXQm5TBUK7aTXujcbiywJ35rWdQlHnWojLVj79lNESzna3UMLiNas2bCjpzBEnewZdjdfvclwcTzmpX5yx2cGx+uZkJmvSgmrS7jJ/pK7gqVJrHKVVrEj9LfK3dWVktF0Hg1Zqh69myQnhIP6OCgVb8Ooz0FodZCQgcwGefdfVJw93J4XTVNL82uzQqNq2y8Gg6ATiNTA/QHvDXLnXaFFoREJTDUx9jj7mowN3KENLZT9sHOEhnlIp+Py1DJlUXOCwZy/lEEoS/rR5Nl16bMdJTlfrePCErjiTuAC//0EeCpH+W7P6289DA0xPTv+sCCaEHq5v4ZPmc+qGgbqn7MMo6oVJgkQ5zksJ0Q8aNHrEN3AA+TYycYn2p1CToOQtoXU7Jv9n2ST09Ah1PnnJDAVLj0AfMK9sCmyztBty33d4JdCcogf2t0fyxc4mjytU=
+  on:
+    tags: true
+    repo: scaccogatto/smooth-vuebar
