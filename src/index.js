@@ -19,6 +19,8 @@ export default {
 
         const listener = bestListener(possibilities)
         if (listener) scrollbar.addListener(listener)
+
+        el.dispatchEvent(new CustomEvent('insert', { detail: el }))
       },
       componentUpdated (el, binding) {
         const scrollbar = Scrollbar.get(el)
@@ -38,6 +40,8 @@ export default {
       unbind (el) {
         const scrollbar = Scrollbar.get(el)
         if (scrollbar) scrollbar.destroy()
+
+        el.dispatchEvent(new CustomEvent('unbind', { detail: el }))
       }
     })
   }

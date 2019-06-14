@@ -24,6 +24,8 @@ Vue.use(SmoothVuebar)
 
 **SSR (nuxt)**: install as [client plugin](https://nuxtjs.org/guide/plugins/#client-side-only)
 
+**Safari and IE**: this library requires a `CustomEvent` polyfill.
+
 ## Usage
 
 Usually this plugin is used app-wide.
@@ -48,7 +50,10 @@ this is a default.vue layout:
 ```html
 <template>
   <div>
-    <div v-smoothscrollbar="{ listener, options }">
+    <div
+      v-smoothscrollbar="{ listener, options }"
+      @insert=".."
+      @unbind="..">
       <nuxt />
     </div>
   </div>
@@ -79,6 +84,14 @@ The directive can be customized passing an object.
 - `options` (default: `undefined`) => can be an object.
 
 Please refer to the [offical API docs](https://github.com/idiotWu/smooth-scrollbar/blob/develop/docs/api.md).
+
+## Events
+
+The directive implements two extra events, useful when you want to retrieve the Scrollbar istance and use it.
+
+- `@insert` - fired when the DOM element is inserted and the library is loaded on it. The callback may be a `function (e)`.
+
+- `@unbind` - fired when the DOM element is unbound and the library is unloaded. The callback may be a `function (e)`.
 
 ### Extra
 
