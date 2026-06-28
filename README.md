@@ -1,125 +1,160 @@
 # smooth-vuebar
 
-> Vue directive wrapper for [smooth-scrollbar](https://github.com/idiotWu/smooth-scrollbar)
+[![npm version](https://img.shields.io/npm/v/smooth-vuebar)](https://www.npmjs.com/package/smooth-vuebar)
+[![CI](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml/badge.svg)](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+> Vue 3 directive wrapper for [smooth-scrollbar](https://github.com/idiotWu/smooth-scrollbar)
+
+Implements smooth-scrollbar as a Vue 3 directive — the right way to handle this kind of DOM manipulation. Ships full TypeScript types, ESM + CJS builds, and SSR-safe defaults.
 
 ## Demo
 
-You can refer to the [wrapped library's demo](https://idiotwu.github.io/smooth-scrollbar/).
-
-## Why
-
-There are many other wrappers for this library but none of them implements the original library as directive.
-
-I think directives are the right way to handle this kind of DOM manipulation, so let it be.
-
-Also, there are so many problems I found while trying SSR that the only available choice for me was doing it by myself.
+Refer to the [upstream library demo](https://idiotwu.github.io/smooth-scrollbar/).
 
 ## Install
 
-`npm i smooth-vuebar`
-
-```js
-Vue.use(SmoothVuebar)
+```sh
+npm i smooth-vuebar
 ```
 
-**SSR (nuxt)**: install as [client plugin](https://nuxtjs.org/guide/plugins/#client-side-only)
+Import the default CSS (sets `max-width/height: 100vw/vh` on the scrollable container):
 
-**Safari and IE**: this library requires a `CustomEvent` polyfill.
+```js
+import 'smooth-vuebar/default.css'
+```
 
 ## Usage
 
-Usually this plugin is used app-wide.
+### Vue 3 (Composition API / `<script setup>`)
 
-### Vue
+```vue
+<script setup>
+import { ref } from 'vue'
 
-```html
-<template>
-  <div>
-    <div v-smoothscrollbar="{ listener, options }">
-      <router-view />
-    </div>
-  </div>
-</template>
-```
-
-
-### Nuxt & Gridsome
-
-this is a default.vue layout:
-
-```html
-<template>
-  <div>
-    <div
-      v-smoothscrollbar="{ listener, options }"
-      @insert=".."
-      @unbind="..">
-      <nuxt />
-    </div>
-  </div>
-</template>
-```
-
-However, you can use it where you want, just mind the default css:
-
-```css
-.smooth-vuebar {
-  max-width: 100vw;
-  max-height: 100vh;
+const onScroll = (status) => {
+  console.log('scroll offset:', status.offset)
 }
+</script>
+
+<template>
+  <div v-smoothscrollbar="{ listener: onScroll, options: { damping: 0.1 } }">
+    <router-view />
+  </div>
+</template>
 ```
 
-And replace it as you wish.
+### Global plugin (main.ts)
 
-## Options
+```ts
+import { createApp } from 'vue'
+import SmoothVuebar from 'smooth-vuebar'
+import 'smooth-vuebar/default.css'
+import App from './App.vue'
 
-The directive can be customized passing an object.
+createApp(App)
+  .use(SmoothVuebar, {
+    // optional global defaults (overridden by per-element binding)
+    options: { damping: 0.1 },
+  })
+  .mount('#app')
+```
+
+### Nuxt 3 (client-only plugin)
+
+```ts
+// plugins/smooth-vuebar.client.ts
+import SmoothVuebar from 'smooth-vuebar'
+import 'smooth-vuebar/default.css'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(SmoothVuebar)
+})
+```
+
+## Directive binding
 
 ```html
 <div v-smoothscrollbar="{ listener, options }">
 ```
 
-- `listener` (default: `undefined`) => can be a function, it will automatically set as listener.
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `options` | `Partial<ScrollbarOptions>` | `undefined` | Options forwarded to `Scrollbar.init`. See [smooth-scrollbar docs](https://github.com/idiotWu/smooth-scrollbar/blob/develop/docs/api.md). |
+| `listener` | `ScrollListener` | `undefined` | Scroll event listener. Automatically added/removed when the binding changes. |
 
-- `options` (default: `undefined`) => can be an object.
-
-Please refer to the [offical API docs](https://github.com/idiotWu/smooth-scrollbar/blob/develop/docs/api.md).
+Global defaults (passed to `app.use(SmoothVuebar, { ... })`) are used only when the per-element binding does not set the corresponding field.
 
 ## Events
 
-The directive implements two extra events, useful when you want to retrieve the Scrollbar istance and use it.
+The directive dispatches native DOM events on the container element:
 
-- `@insert` - fired when the DOM element is inserted and the library is loaded on it. The callback may be a `function (e)`.
+| Event | When | `event.detail` |
+|-------|------|---------------|
+| `@insert` | Element mounted and scrollbar initialized | The container `HTMLElement` |
+| `@unbind` | Element about to be unmounted | The container `HTMLElement` |
 
-- `@unbind` - fired when the DOM element is unbound and the library is unloaded. The callback may be a `function (e)`.
-
-### Extra
-
-You can define global default options. They are valid only if you don't set any local option.
-
-Try it:
-
-```js
-Vue.use(SmoothVuebar, {
-  listener: () => {},
-  options: {}
-})
+```html
+<div v-smoothscrollbar @insert="onInit" @unbind="onDestroy">
 ```
 
-## Play with the core
+## Accessing the Scrollbar instance
 
-If you want to use the actual wrapper library, here is an helper, available in every component:
+### Via component property
 
-```js
-this.$scrollbar
+```ts
+// Options API
+this.$scrollbar.get(el)
+
+// Composition API — inject the app
+import { getCurrentInstance } from 'vue'
+const { proxy } = getCurrentInstance()!
+proxy!.$scrollbar.get(el)
 ```
 
-Or project-wide
+### Via named import
 
-```js
-import Vue from 'vue'
+```ts
+import { Scrollbar } from 'smooth-vuebar'
 
-Vue.scrollbar
+const instance = Scrollbar.get(el)
 ```
 
-Refer to [offical API docs](https://github.com/idiotWu/smooth-scrollbar/blob/develop/docs/api.md).
+## Mobile / touch devices
+
+Pass `false` as the binding value to disable initialization on that element while
+keeping the directive registered (so Vue does not throw on `v-smoothscrollbar`).
+Native momentum scrolling takes over on touch devices.
+
+```vue
+<script setup>
+const isMobile = () => navigator.maxTouchPoints > 1
+</script>
+
+<template>
+  <!-- false disables init; truthy value (or no value) enables it -->
+  <div v-smoothscrollbar="isMobile() ? false : { options: { damping: 0.1 } }">
+    <slot />
+  </div>
+</template>
+```
+
+This resolves [issue #7](https://github.com/scaccogatto/smooth-vuebar/issues/7).
+
+## Migrating from v1 (Vue 2)
+
+v2.0.0 is a **breaking change** — it targets Vue 3 only.
+
+| v1 (Vue 2) | v2 (Vue 3) |
+|------------|------------|
+| `Vue.use(SmoothVuebar)` | `app.use(SmoothVuebar)` |
+| `Vue.prototype.$scrollbar` | `app.config.globalProperties.$scrollbar` or `import { Scrollbar } from 'smooth-vuebar'` |
+| `Vue.scrollbar` | `import { Scrollbar } from 'smooth-vuebar'` |
+| `smooth-scrollbar ^8.4.0` (lodash-es vuln) | `smooth-scrollbar ^8.8.4` (no lodash-es) |
+
+The directive name (`v-smoothscrollbar`) and binding shape (`{ options, listener }`) are unchanged.
+
+## Releases
+
+- **v2.x** — Vue 3, TypeScript, Vite library mode (this branch)
+- **v1.x** — Vue 2 (no longer maintained; Vue 2 reached EOL December 2023)
