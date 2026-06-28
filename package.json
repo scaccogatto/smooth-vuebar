@@ -1,27 +1,62 @@
 {
   "name": "smooth-vuebar",
-  "version": "1.4.0",
-  "description": "Vue directive wrapper for smooth-scrollbar",
-  "main": "src/index.js",
+  "version": "2.0.0",
+  "description": "Vue 3 directive wrapper for smooth-scrollbar",
+  "type": "module",
+  "main": "./dist/smooth-vuebar.cjs",
+  "module": "./dist/smooth-vuebar.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/smooth-vuebar.js",
+      "require": "./dist/smooth-vuebar.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./default.css": "./dist/default.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "node test"
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm run build && npm run test"
+  },
+  "peerDependencies": {
+    "vue": "^3.2.0"
+  },
+  "dependencies": {
+    "smooth-scrollbar": "^8.8.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/test-utils": "^2.4.11",
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.0",
+    "vite-plugin-dts": "^5.0.3",
+    "vitest": "^4.1.9",
+    "vue": "^3.5.39",
+    "vue-tsc": "^3.3.5"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scaccogatto/smooth-vuebar.git"
   },
   "keywords": [
-    "vue.js",
+    "vue",
+    "vue3",
     "smooth",
-    "scrollbar"
+    "scrollbar",
+    "directive",
+    "plugin"
   ],
   "author": "Marco 'Gatto' Boffo",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/scaccogatto/smooth-vuebar/issues"
   },
-  "homepage": "https://github.com/scaccogatto/smooth-vuebar#readme",
-  "dependencies": {
-    "smooth-scrollbar": "^8.4.0"
-  }
+  "homepage": "https://github.com/scaccogatto/smooth-vuebar#readme"
 }
