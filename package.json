@@ -1,6 +1,6 @@
 {
   "name": "smooth-vuebar",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Vue 3 directive wrapper for smooth-scrollbar",
   "type": "module",
   "main": "./dist/smooth-vuebar.cjs",
@@ -50,9 +50,13 @@
     "vue",
     "vue3",
     "smooth",
+    "smooth-scroll",
     "scrollbar",
+    "custom-scrollbar",
     "directive",
-    "plugin"
+    "plugin",
+    "typescript",
+    "vite"
   ],
   "author": "Marco 'Gatto' Boffo",
   "license": "MIT",
