@@ -23,10 +23,6 @@ export default defineConfig({
       external: ['vue', 'smooth-scrollbar'],
       output: {
         exports: 'named',
-        globals: {
-          vue: 'Vue',
-          'smooth-scrollbar': 'Scrollbar',
-        },
       },
     },
   },
