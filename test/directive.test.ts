@@ -233,4 +233,18 @@ describe('v-smoothscrollbar directive', () => {
 
     wrapper.unmount()
   })
+
+  it('skips Scrollbar.init when binding value is false (mobile disable pattern)', async () => {
+    const TestComponent = defineComponent({
+      template: `<div v-smoothscrollbar="false"></div>`,
+    })
+
+    const wrapper = mount(TestComponent, {
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    expect(MockInit).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
 })

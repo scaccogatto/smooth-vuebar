@@ -12,10 +12,11 @@
       "require": "./dist/smooth-vuebar.cjs",
       "types": "./dist/index.d.ts"
     },
-    "./default.css": "./dist/default.css"
+    "./default.css": "./src/default.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/default.css"
   ],
   "scripts": {
     "build": "vite build",

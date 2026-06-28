@@ -122,8 +122,9 @@ const instance = Scrollbar.get(el)
 
 ## Mobile / touch devices
 
-smooth-scrollbar works on touch devices but you may want to skip initialization on
-mobile to rely on native momentum scrolling instead.
+Pass `false` as the binding value to disable initialization on that element while
+keeping the directive registered (so Vue does not throw on `v-smoothscrollbar`).
+Native momentum scrolling takes over on touch devices.
 
 ```vue
 <script setup>
@@ -131,20 +132,11 @@ const isMobile = () => navigator.maxTouchPoints > 1
 </script>
 
 <template>
-  <!-- Only enable the directive on non-touch devices -->
-  <div :v-smoothscrollbar="isMobile() ? undefined : {}">
+  <!-- false disables init; truthy value (or no value) enables it -->
+  <div v-smoothscrollbar="isMobile() ? false : { options: { damping: 0.1 } }">
     <slot />
   </div>
 </template>
-```
-
-Or conditionally in the global plugin options:
-
-```ts
-// main.ts — skip directive init entirely on touch devices
-if (navigator.maxTouchPoints <= 1) {
-  app.use(SmoothVuebar)
-}
 ```
 
 This resolves [issue #7](https://github.com/scaccogatto/smooth-vuebar/issues/7).

@@ -9,15 +9,22 @@ export { default as Scrollbar } from 'smooth-scrollbar'
 
 export type { SmoothVuebarBindingValue, SmoothVuebarPluginOptions }
 
+// Binding can be false to explicitly disable the directive (useful for mobile).
+type DirectiveValue = SmoothVuebarBindingValue | false | null | undefined
+
 const createDirective = (
   globalOptions: SmoothVuebarPluginOptions | undefined,
-): ObjectDirective<HTMLElement, SmoothVuebarBindingValue> => ({
+): ObjectDirective<HTMLElement, DirectiveValue> => ({
   beforeMount(el) {
     el.classList.add('smooth-vuebar')
   },
 
-  mounted(el, binding: DirectiveBinding<SmoothVuebarBindingValue>) {
-    const possibilities = [binding.value, globalOptions]
+  mounted(el, binding: DirectiveBinding<DirectiveValue>) {
+    // `false` / null / undefined disables the directive — useful for mobile.
+    if (!binding.value && binding.value !== undefined) return
+
+    const value = binding.value || undefined
+    const possibilities = [value, globalOptions]
     const scrollbar = Scrollbar.init(el, bestOptions(possibilities))
 
     const listener = bestListener(possibilities)
@@ -26,14 +33,16 @@ const createDirective = (
     el.dispatchEvent(new CustomEvent('insert', { detail: el }))
   },
 
-  updated(el, binding: DirectiveBinding<SmoothVuebarBindingValue>) {
+  updated(el, binding: DirectiveBinding<DirectiveValue>) {
     const scrollbar = Scrollbar.get(el)
     if (!scrollbar) return
 
-    const oldListener = bestListener([binding.oldValue ?? undefined, globalOptions])
+    const oldValue = binding.oldValue || undefined
+    const oldListener = bestListener([oldValue ?? undefined, globalOptions])
     if (oldListener) scrollbar.removeListener(oldListener)
 
-    const listener = bestListener([binding.value, globalOptions])
+    const value = binding.value || undefined
+    const listener = bestListener([value, globalOptions])
     if (listener) scrollbar.addListener(listener)
 
     scrollbar.update()

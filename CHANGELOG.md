@@ -24,7 +24,7 @@
 ### Fixed
 
 - **Issue #6**: Vue 3 compatibility — the directive and plugin are fully rewritten for the Vue 3 API. See [#6](https://github.com/scaccogatto/smooth-vuebar/issues/6).
-- **Issue #7**: Added README section explaining mobile/touch conditional init via `navigator.maxTouchPoints`. See [#7](https://github.com/scaccogatto/smooth-vuebar/issues/7).
+- **Issue #7**: Passing `false` as the directive binding value (`v-smoothscrollbar="false"`) now skips `Scrollbar.init`, enabling conditional mobile disabling without removing the directive from the template. README documents the `navigator.maxTouchPoints` pattern. See [#7](https://github.com/scaccogatto/smooth-vuebar/issues/7).
 - **PR #10 / lodash-es CVE**: Upgraded `smooth-scrollbar` from `^8.4.0` to `^8.8.4`, which drops `lodash-es` as a transitive dependency entirely, eliminating the high-severity prototype-pollution vulnerability. PR #10 (lodash-es lock-file patch) is superseded by this change.
 
 ### Changed
