@@ -1,5 +1,9 @@
 # smooth-vuebar
 
+> [!WARNING]
+> **Deprecated.** The underlying [smooth-scrollbar](https://github.com/idiotWu/smooth-scrollbar) library is unmaintained (no release since mid-2023), so this wrapper has no future. Use **[overlayscrollbars-vue](https://github.com/KingSora/OverlayScrollbars/tree/master/packages/overlayscrollbars-vue)** — the officially maintained Vue wrapper for [OverlayScrollbars](https://kingsora.github.io/OverlayScrollbars/) — or native CSS (`scrollbar-width`, `scrollbar-color`, `::-webkit-scrollbar`) if you only need styling.
+> smooth-vuebar keeps working as-is (last release v2.0.2); it just won't receive new features.
+
 [![npm version](https://img.shields.io/npm/v/smooth-vuebar)](https://www.npmjs.com/package/smooth-vuebar)
 [![npm downloads](https://img.shields.io/npm/dm/smooth-vuebar)](https://www.npmjs.com/package/smooth-vuebar)
 [![CI](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml/badge.svg)](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml)
