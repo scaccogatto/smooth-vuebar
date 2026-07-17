@@ -12,6 +12,25 @@ export type { SmoothVuebarBindingValue, SmoothVuebarPluginOptions }
 // Binding can be false to explicitly disable the directive (useful for mobile).
 type DirectiveValue = SmoothVuebarBindingValue | false | null | undefined
 
+// `false` / `null` disables the directive — useful for mobile. `undefined`
+// (bare `v-smoothscrollbar`, no expression) counts as enabled.
+const isDisabled = (value: DirectiveValue): boolean => !value && value !== undefined
+
+const initScrollbar = (
+  el: HTMLElement,
+  binding: DirectiveBinding<DirectiveValue>,
+  globalOptions: SmoothVuebarPluginOptions | undefined,
+) => {
+  const value = binding.value || undefined
+  const possibilities = [value, globalOptions]
+  const scrollbar = Scrollbar.init(el, bestOptions(possibilities))
+
+  const listener = bestListener(possibilities)
+  if (listener) scrollbar.addListener(listener)
+
+  el.dispatchEvent(new CustomEvent('insert', { detail: el }))
+}
+
 const createDirective = (
   globalOptions: SmoothVuebarPluginOptions | undefined,
 ): ObjectDirective<HTMLElement, DirectiveValue> => ({
@@ -20,22 +39,26 @@ const createDirective = (
   },
 
   mounted(el, binding: DirectiveBinding<DirectiveValue>) {
-    // `false` / null / undefined disables the directive — useful for mobile.
-    if (!binding.value && binding.value !== undefined) return
+    if (isDisabled(binding.value)) return
 
-    const value = binding.value || undefined
-    const possibilities = [value, globalOptions]
-    const scrollbar = Scrollbar.init(el, bestOptions(possibilities))
-
-    const listener = bestListener(possibilities)
-    if (listener) scrollbar.addListener(listener)
-
-    el.dispatchEvent(new CustomEvent('insert', { detail: el }))
+    initScrollbar(el, binding, globalOptions)
   },
 
   updated(el, binding: DirectiveBinding<DirectiveValue>) {
     const scrollbar = Scrollbar.get(el)
-    if (!scrollbar) return
+    const disabled = isDisabled(binding.value)
+
+    // Binding toggled falsy→truthy with no existing instance: initialize now.
+    if (!scrollbar) {
+      if (!disabled) initScrollbar(el, binding, globalOptions)
+      return
+    }
+
+    // Binding toggled truthy→falsy: tear down (destroy() clears its own listeners).
+    if (disabled) {
+      scrollbar.destroy()
+      return
+    }
 
     const oldValue = binding.oldValue || undefined
     const oldListener = bestListener([oldValue ?? undefined, globalOptions])

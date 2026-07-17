@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Directive bound to a value that starts falsy and later toggles truthy (e.g. `v-smoothscrollbar="isEnabled"`) now correctly initializes the scrollbar in `updated()` instead of never mounting it. Conversely, toggling from truthy to falsy now destroys the existing scrollbar instance.
+
 ## [2.0.0] - 2026-06-28
 
 ### Breaking Changes

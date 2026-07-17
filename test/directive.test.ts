@@ -247,4 +247,74 @@ describe('v-smoothscrollbar directive', () => {
     expect(MockInit).not.toHaveBeenCalled()
     wrapper.unmount()
   })
+
+  it('initializes the scrollbar when a falsy binding toggles truthy', async () => {
+    MockGet.mockReturnValueOnce(undefined)
+
+    const TestComponent = defineComponent({
+      props: { enabled: Boolean },
+      template: `<div v-smoothscrollbar="enabled"></div>`,
+    })
+
+    const wrapper = mount(TestComponent, {
+      props: { enabled: false },
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    expect(MockInit).not.toHaveBeenCalled()
+
+    await wrapper.setProps({ enabled: true })
+    await nextTick()
+
+    expect(MockInit).toHaveBeenCalledOnce()
+    expect(MockInit.mock.calls[0][0]).toBe(wrapper.element)
+
+    wrapper.unmount()
+  })
+
+  it('does not destroy the scrollbar on re-render when the directive has no binding value', async () => {
+    const TestComponent = defineComponent({
+      props: { count: Number },
+      template: '<div v-smoothscrollbar>{{ count }}</div>',
+    })
+
+    const wrapper = mount(TestComponent, {
+      props: { count: 0 },
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    const instance = getMockInstance()
+
+    await wrapper.setProps({ count: 1 })
+    await nextTick()
+
+    expect(instance.destroy).not.toHaveBeenCalled()
+    expect(instance.update).toHaveBeenCalledOnce()
+
+    wrapper.unmount()
+  })
+
+  it('destroys the scrollbar when a truthy binding toggles falsy', async () => {
+    const TestComponent = defineComponent({
+      props: { enabled: Boolean },
+      template: `<div v-smoothscrollbar="enabled"></div>`,
+    })
+
+    const wrapper = mount(TestComponent, {
+      props: { enabled: true },
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    const instance = getMockInstance()
+
+    await wrapper.setProps({ enabled: false })
+    await nextTick()
+
+    expect(instance.destroy).toHaveBeenCalledOnce()
+
+    wrapper.unmount()
+  })
 })

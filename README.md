@@ -1,6 +1,7 @@
 # smooth-vuebar
 
 [![npm version](https://img.shields.io/npm/v/smooth-vuebar)](https://www.npmjs.com/package/smooth-vuebar)
+[![npm downloads](https://img.shields.io/npm/dm/smooth-vuebar)](https://www.npmjs.com/package/smooth-vuebar)
 [![CI](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml/badge.svg)](https://github.com/scaccogatto/smooth-vuebar/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
