@@ -18,6 +18,9 @@
     "dist",
     "src/default.css"
   ],
+  "sideEffects": [
+    "src/default.css"
+  ],
   "scripts": {
     "build": "vite build",
     "coverage": "vitest run --coverage",

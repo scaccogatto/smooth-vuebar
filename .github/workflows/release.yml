@@ -19,4 +19,15 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm install -g npm@latest
+      - name: Check if version is already published
+        id: version-check
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm publish
+        if: steps.version-check.outputs.exists != 'true'
