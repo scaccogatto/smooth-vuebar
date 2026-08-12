@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1786538392009" clover="3.2.0">
-  <project timestamp="1786538392009" name="All files">
+<coverage generated="1786542815682" clover="3.2.0">
+  <project timestamp="1786542815682" name="All files">
     <metrics statements="44" coveredstatements="44" conditionals="28" coveredconditionals="26" methods="13" coveredmethods="13" elements="85" coveredelements="83" complexity="0" loc="44" ncloc="44" packages="1" files="2" classes="2"/>
     <file name="index.ts" path="/Users/gatto/Developer/scaccogatto/smooth-vuebar/src/index.ts">
       <metrics statements="34" coveredstatements="34" conditionals="26" coveredconditionals="24" methods="8" coveredmethods="8"/>

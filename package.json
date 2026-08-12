@@ -25,12 +25,13 @@
     "build": "vite build",
     "coverage": "vitest run --coverage",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && npm run typecheck-demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "npm run typecheck && npm run build && npm run test",
     "build-demo": "vite build --config vite.config.demo.ts",
-    "dev-demo": "vite --config vite.config.demo.ts"
+    "dev-demo": "vite --config vite.config.demo.ts",
+    "typecheck-demo": "vue-tsc --noEmit -p tsconfig.demo.json"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^26.2.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "^4.1.9",
     "@vue/test-utils": "^2.4.11",
@@ -50,7 +52,8 @@
     "vite": "^8.1.0",
     "vite-plugin-dts": "^5.0.3",
     "vitest": "^4.1.9",
-    "vue": "^3.5.39"
+    "vue": "^3.5.39",
+    "vue-tsc": "^3.3.9"
   },
   "repository": {
     "type": "git",
