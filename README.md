@@ -15,7 +15,9 @@ Implements smooth-scrollbar as a Vue 3 directive — the right way to handle thi
 
 ## Demo
 
-Refer to the [upstream library demo](https://idiotwu.github.io/smooth-scrollbar/).
+[Live demo](https://scaccogatto.github.io/smooth-vuebar/) — toggle the directive on and off on a scrollable box, and drive the instance through the re-exported `Scrollbar`.
+
+For the scrolling engine itself, refer to the [upstream library demo](https://idiotwu.github.io/smooth-scrollbar/).
 
 ## Install
 
