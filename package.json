@@ -28,7 +28,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run typecheck && npm run build && npm run test"
+    "prepublishOnly": "npm run typecheck && npm run build && npm run test",
+    "build-demo": "vite build --config vite.config.demo.ts",
+    "dev-demo": "vite --config vite.config.demo.ts"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
@@ -38,7 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "^4.1.9",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.6.0",
