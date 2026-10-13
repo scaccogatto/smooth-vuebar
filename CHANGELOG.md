@@ -2,9 +2,34 @@
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- `engines.node` is now `>=24` (Node 20 is end-of-life and CI only tests Node 24). It only affects tooling that enforces `engines`, the browser runtime is unchanged.
+
+### Fixed
+
+- `$scrollbar` is now typed as the smooth-scrollbar class, so the documented `this.$scrollbar.get(el)` and `init` typecheck (it was typed as the instance class without statics).
+- The `ComponentCustomProperties` augmentation now targets `'vue'` instead of `'@vue/runtime-core'`, so `$scrollbar` stays typed under pnpm and other strict `node_modules` layouts.
+- Emitted declarations use explicit `.js` / `.cjs` relative imports, so `node16` / `nodenext` consumers get typed plugin options instead of `any`.
+- CommonJS consumers now resolve CJS-format `.d.cts` declarations, and the `types` condition comes first in each `exports` branch. `./package.json` is exported too.
+- The directive keeps a consumer-provided `tabindex` (and inline `outline`) when smooth-scrollbar initializes, so a `tabindex="0"` container stays keyboard reachable. Tearing the scrollbar down (binding toggled falsy or unmount) restores the element's original `tabindex`, `data-scrollbar` and `outline`.
+
+### Documentation
+
+- Accessibility section: keyboard-reachable container (`tabindex="0"`, `role`, `aria-label`) and disabling the directive for `prefers-reduced-motion`.
+- Nuxt example is now a universal plugin (`install()` is SSR-safe, a `.client` plugin made server rendering warn `Failed to resolve directive`).
+- Fixed the `default.css` description (it sets `max-height: 100vh` only).
+- Package `homepage` now points to the live demo.
+
+## [2.0.2] - 2026-07-17
+
 ### Fixed
 
 - Directive bound to a value that starts falsy and later toggles truthy (e.g. `v-smoothscrollbar="isEnabled"`) now correctly initializes the scrollbar in `updated()` instead of never mounting it. Conversely, toggling from truthy to falsy now destroys the existing scrollbar instance.
+
+## [2.0.1] - 2026-06-28
+
+Metadata-only release: npm keywords refreshed, code identical to 2.0.0. It was published from an untagged commit, so there is no `v2.0.1` git tag.
 
 ## [2.0.0] - 2026-06-28
 
