@@ -5,6 +5,14 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
-    globals: true,
+    coverage: {
+      include: ['src/**/*.ts'],
+      thresholds: {
+        lines: 100,
+        functions: 100,
+        statements: 100,
+        branches: 100,
+      },
+    },
   },
 })

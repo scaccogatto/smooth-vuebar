@@ -13,7 +13,14 @@ vi.mock('smooth-scrollbar', () => {
   }
 
   const MockScrollbar = {
-    init: vi.fn(() => mockScrollbarInstance),
+    // Mirror the DOM side effects of the real Scrollbar constructor, which
+    // destroy() does not revert.
+    init: vi.fn((el: HTMLElement) => {
+      el.setAttribute('data-scrollbar', 'true')
+      el.setAttribute('tabindex', '-1')
+      el.style.outline = 'none'
+      return mockScrollbarInstance
+    }),
     get: vi.fn(() => mockScrollbarInstance),
     default: undefined as unknown,
   }
@@ -316,5 +323,108 @@ describe('v-smoothscrollbar directive', () => {
     expect(instance.destroy).toHaveBeenCalledOnce()
 
     wrapper.unmount()
+  })
+
+  it('does not initialize when a falsy binding re-renders and stays falsy', async () => {
+    MockGet.mockReturnValueOnce(undefined)
+
+    const TestComponent = defineComponent({
+      props: { count: Number },
+      template: '<div v-smoothscrollbar="false">{{ count }}</div>',
+    })
+
+    const wrapper = mount(TestComponent, {
+      props: { count: 0 },
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    await wrapper.setProps({ count: 1 })
+    await nextTick()
+
+    expect(MockInit).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
+
+  it('dispatches unbind without destroying when no instance exists on unmount', async () => {
+    const onUnbind = vi.fn()
+    const TestComponent = defineComponent({
+      template: '<div v-smoothscrollbar="false" @unbind="onUnbind"></div>',
+      setup: () => ({ onUnbind }),
+    })
+
+    const wrapper = mount(TestComponent, {
+      global: { plugins: [SmoothVuebar] },
+      attachTo: document.body,
+    })
+
+    MockGet.mockReturnValueOnce(undefined)
+    wrapper.unmount()
+
+    expect(onUnbind).toHaveBeenCalledOnce()
+  })
+
+  describe('focusability', () => {
+    it('keeps a consumer tabindex and focus outline after init', () => {
+      const TestComponent = defineComponent({
+        template: '<div v-smoothscrollbar tabindex="0" style="outline: 2px solid red"></div>',
+      })
+
+      const wrapper = mount(TestComponent, {
+        global: { plugins: [SmoothVuebar] },
+        attachTo: document.body,
+      })
+
+      const el = wrapper.element as HTMLElement
+      expect(MockInit).toHaveBeenCalledOnce()
+      expect(el.getAttribute('tabindex')).toBe('0')
+      expect(el.style.outline).toBe('2px solid red')
+      wrapper.unmount()
+    })
+
+    it('restores the element attributes when a truthy binding toggles falsy', async () => {
+      const TestComponent = defineComponent({
+        props: { enabled: Boolean },
+        template: '<div v-smoothscrollbar="enabled"></div>',
+      })
+
+      const wrapper = mount(TestComponent, {
+        props: { enabled: true },
+        global: { plugins: [SmoothVuebar] },
+        attachTo: document.body,
+      })
+
+      const el = wrapper.element as HTMLElement
+      expect(el.getAttribute('tabindex')).toBe('-1')
+
+      await wrapper.setProps({ enabled: false })
+      await nextTick()
+
+      expect(el.hasAttribute('tabindex')).toBe(false)
+      expect(el.hasAttribute('data-scrollbar')).toBe(false)
+      expect(el.style.outline).toBe('')
+      wrapper.unmount()
+    })
+
+    it('restores a consumer tabindex when a truthy binding toggles falsy', async () => {
+      const TestComponent = defineComponent({
+        props: { enabled: Boolean },
+        template: '<div v-smoothscrollbar="enabled" tabindex="0"></div>',
+      })
+
+      const wrapper = mount(TestComponent, {
+        props: { enabled: true },
+        global: { plugins: [SmoothVuebar] },
+        attachTo: document.body,
+      })
+
+      await wrapper.setProps({ enabled: false })
+      await nextTick()
+
+      const el = wrapper.element as HTMLElement
+      expect(el.getAttribute('tabindex')).toBe('0')
+      expect(el.hasAttribute('data-scrollbar')).toBe(false)
+      wrapper.unmount()
+    })
   })
 })
