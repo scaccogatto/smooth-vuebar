@@ -1,4 +1,4 @@
-import type { SmoothVuebarBindingValue } from './types'
+import type { SmoothVuebarBindingValue } from './types.js'
 
 type MaybeValue = SmoothVuebarBindingValue | null | undefined
 
