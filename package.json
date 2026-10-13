@@ -8,11 +8,17 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/smooth-vuebar.js",
-      "require": "./dist/smooth-vuebar.cjs",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/smooth-vuebar.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/smooth-vuebar.cjs"
+      }
     },
-    "./default.css": "./src/default.css"
+    "./default.css": "./src/default.css",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
@@ -25,21 +31,26 @@
     "build": "vite build",
     "coverage": "vitest run --coverage",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit && npm run typecheck-demo",
+    "typecheck": "tsc -p tsconfig.test.json && npm run typecheck-demo",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run typecheck && npm run build && npm run test",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build && npm run lint:package",
     "build-demo": "vite build --config vite.config.demo.ts",
     "dev-demo": "vite --config vite.config.demo.ts",
-    "typecheck-demo": "vue-tsc --noEmit -p tsconfig.demo.json"
+    "typecheck-demo": "vue-tsc --noEmit -p tsconfig.demo.json",
+    "lint:package": "publint --strict && attw --pack . --exclude-entrypoints ./default.css"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "dependencies": {
     "smooth-scrollbar": "^8.8.4"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.5",
     "@vitejs/plugin-vue": "^6.0.10",
@@ -47,6 +58,7 @@
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.6.0",
     "jsdom": "^30.0.1",
+    "publint": "^0.3.25",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4",
@@ -76,5 +88,5 @@
   "bugs": {
     "url": "https://github.com/scaccogatto/smooth-vuebar/issues"
   },
-  "homepage": "https://github.com/scaccogatto/smooth-vuebar#readme"
+  "homepage": "https://scaccogatto.github.io/smooth-vuebar/"
 }

@@ -25,7 +25,7 @@ For the scrolling engine itself, refer to the [upstream library demo](https://id
 npm i smooth-vuebar
 ```
 
-Import the default CSS (sets `max-width/height: 100vw/vh` on the scrollable container):
+Import the default CSS (sets `max-height: 100vh` on the scrollable container):
 
 ```js
 import 'smooth-vuebar/default.css'
@@ -67,10 +67,14 @@ createApp(App)
   .mount('#app')
 ```
 
-### Nuxt 3 (client-only plugin)
+### Nuxt 3 (universal plugin)
+
+`install()` only registers the directive and `$scrollbar`, it never touches the
+DOM, so register it on both server and client. A `.client` plugin would leave
+the directive unresolved during server rendering (`Failed to resolve directive`).
 
 ```ts
-// plugins/smooth-vuebar.client.ts
+// plugins/smooth-vuebar.ts
 import SmoothVuebar from 'smooth-vuebar'
 import 'smooth-vuebar/default.css'
 
@@ -119,6 +123,16 @@ const { proxy } = getCurrentInstance()!
 proxy!.$scrollbar.get(el)
 ```
 
+`$scrollbar` is typed as the smooth-scrollbar class, so `get`, `init`, `has` and
+the other statics typecheck.
+
+> [!NOTE]
+> smooth-scrollbar ships CommonJS-format typings with `export default`, so under
+> `"moduleResolution": "node16"` / `"nodenext"` TypeScript sees its default export
+> as a namespace and `Scrollbar.get` / `$scrollbar.get` do not typecheck. The
+> plugin options stay fully typed in every mode. Use `"moduleResolution": "bundler"`
+> (the Vite / Nuxt default) for the class statics.
+
 ### Via named import
 
 ```ts
@@ -147,6 +161,36 @@ const isMobile = () => navigator.maxTouchPoints > 1
 ```
 
 This resolves [issue #7](https://github.com/scaccogatto/smooth-vuebar/issues/7).
+
+## Accessibility
+
+smooth-scrollbar sets `tabindex="-1"` and `outline: none` on the container, which
+removes it from the keyboard tab order. Give the container an explicit
+`tabindex="0"` plus a role and label: the directive keeps your `tabindex` and
+inline `outline` across initialization, and restores the element's original
+attributes when the scrollbar is torn down.
+
+```html
+<div v-smoothscrollbar tabindex="0" role="region" aria-label="Article content">
+```
+
+Smooth (momentum) scrolling can be uncomfortable for people who asked their OS to
+reduce motion. Disable the directive for them with the same `false` pattern:
+
+```vue
+<script setup>
+// Guarded so the component also renders on the server (SSR)
+const reduceMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+</script>
+
+<template>
+  <div v-smoothscrollbar="reduceMotion ? false : { options: { damping: 0.1 } }">
+    <slot />
+  </div>
+</template>
+```
 
 ## Migrating from v1 (Vue 2)
 

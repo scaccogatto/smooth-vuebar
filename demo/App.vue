@@ -3,7 +3,13 @@ import { ref } from 'vue'
 import type { ScrollListener } from 'smooth-scrollbar/interfaces'
 import { Scrollbar } from 'smooth-vuebar'
 
-const enabled = ref(true)
+// Respect reduced-motion preferences: start with native scrolling for those
+// users (they can still opt in with the toggle).
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const enabled = ref(!prefersReducedMotion)
 const offset = ref(0)
 const limit = ref(0)
 
@@ -45,6 +51,9 @@ const scrollToTop = () => {
     <div
       v-smoothscrollbar="enabled && { listener: onScroll }"
       class="scroller"
+      tabindex="0"
+      role="region"
+      aria-label="Scrollable demo content"
     >
       <p v-for="n in paragraphs" :key="n">
         <strong>{{ n }}.</strong> Momentum scrolling is handled entirely by the
@@ -77,6 +86,11 @@ const scrollToTop = () => {
   border: 1px solid var(--line);
   border-radius: 0.5rem;
   overflow-y: auto;
+}
+
+.scroller:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .scroller p {

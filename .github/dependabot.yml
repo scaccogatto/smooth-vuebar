@@ -1,9 +1,16 @@
 version: 2
 updates:
+  # Deprecated package: monthly cadence keeps the security baseline without
+  # weekly churn.
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    ignore:
+      # Stay on TypeScript 6 until TS 7.1 is supported by typescript-eslint,
+      # vue-tsc and vite-plugin-dts.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     groups:
       vitest:
         patterns:
@@ -18,4 +25,4 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly

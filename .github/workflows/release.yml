@@ -1,24 +1,69 @@
 name: Release
+
 on:
   push:
     tags: ['v*']
-  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Tag-only deployment policy (v*) is enforced on the environment.
+    environment: npm
     permissions:
       contents: read
-      id-token: write
+      id-token: write # npm trusted publishing (OIDC) + provenance
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
           registry-url: 'https://registry.npmjs.org'
+
+      # Use the npm bundled with Node instead of an unpinned npm@latest.
+      # Trusted publishing requires npm >= 11.5.1.
+      - name: Check npm supports trusted publishing
+        run: |
+          NPM_VERSION=$(npm --version)
+          if ! printf '%s\n' 11.5.1 "$NPM_VERSION" | sort -V -C; then
+            echo "::error::npm $NPM_VERSION is older than 11.5.1"
+            exit 1
+          fi
+
+      - name: Check tag matches package.json version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "::error::Tag $TAG does not match package.json version v$VERSION"
+            exit 1
+          fi
+
       - run: npm ci
-      - run: npm run build
-      - run: npm install -g npm@latest
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint package
+        run: npm run lint:package
+
       - name: Check if version is already published
         id: version-check
         run: |
@@ -29,5 +74,6 @@ jobs:
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
+
       - run: npm publish
         if: steps.version-check.outputs.exists != 'true'
