@@ -14,7 +14,8 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: resolve(import.meta.dirname, 'dist'),
+    // Separate from the library output so building the demo never wipes dist/.
+    outDir: resolve(import.meta.dirname, 'dist-demo'),
     emptyOutDir: true,
   },
 })
